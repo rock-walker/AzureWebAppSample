@@ -1,0 +1,67 @@
+﻿@model BookStore.Models.Purchase
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string[] cities = new string[] { "Лондон", "Париж", "Москва" };
+    string[] countries = new string[] { "Великобритания", "Франция", "Россия" };
+}
+@model SelectList
+@using BookStore.Helpers
+
+<div class="row">
+    <div class="col-sm-4">
+        <h3>Города</h3>
+        @Html.CreateList(cities)
+        <br />
+        <h3>Страны</h3>
+        <!-- или можно вызвать так -->
+        @ListHelper.CreateList(Html, countries)
+    </div>
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.DropDownList("Author", Model, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            @Html.ListBox("countires", new MultiSelectList(new string[] { "Россия", "США", "Китай", "Индия" }), new { @class = "form-control" })
+        </div>
+        <div>
+            <h3>Форма оформления покупки</h3>
+            @using (Html.BeginForm("Buy", "Home", FormMethod.Post))
+            {
+                @Html.HiddenFor(m => m.BookId)
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Person, "Введите свое имя")
+                    @Html.TextBoxFor(m => m.Person, new {@class = "form-control"})
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Address, "Введите адрес")
+
+                    @Html.TextBoxFor(m => m.Address, new {@class = "form-control"})
+                </div>
+                <button type="submit" class="btn btn-success">Отправить</button>
+
+            }
+        </div>
+    </div>
+</div>
+
+@*<div>
+        <h3>Форма оформления покупки</h3>
+        <form method="post" action="">
+            <input type="hidden" value="@ViewBag.BookId" name="BookId" />
+            <table>
+                <tr>
+                    <td><p>Введите свое имя </p></td>
+                    <td><input type="text" name="Person" /> </td>
+                </tr>
+                <tr>
+                    <td><p>Введите адрес :</p></td>
+                    <td>
+                        <input type="text" name="Address" />
+                    </td>
+                </tr>
+                <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
+            </table>
+        </form>
+    </div>*@
+@Html.Partial("Partial")

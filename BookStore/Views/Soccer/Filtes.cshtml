@@ -1,0 +1,57 @@
+﻿@model BookStore.Models.PlayersListViewModel
+
+@{
+    ViewBag.Title = "Каталог игроков";
+}
+
+<h2>Каталог игроков</h2>
+
+<p>
+    @Html.ActionLink("Добавить игрока", "Create")
+</p>
+
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">Отдел: </label>
+        @Html.DropDownList("team", Model.Teams as SelectList,
+                    htmlAttributes: new { @class = "form-control" })
+
+        <label class="control-label">Статус : </label>
+        @Html.DropDownList("position", Model.Positions as SelectList,
+                htmlAttributes: new { @class = "form-control" })
+
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
+
+<table>
+    <tr>
+        <th>Имя игрока</th>
+        <th>Возраст</th>
+        <th>Позиция на поле</th>
+        <th>Команда</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Players)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Age)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Position)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Team.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Редактировать", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>

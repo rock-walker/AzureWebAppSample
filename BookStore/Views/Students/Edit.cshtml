@@ -1,0 +1,52 @@
+﻿@using BookStore.Models
+@model BookStore.Models.Student
+@{
+    ViewBag.Title = "Edit";
+}
+
+
+@using (Html.BeginForm())
+{
+
+    <fieldset>
+        <legend>Студент</legend>
+
+        @Html.HiddenFor(model => model.Id)
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Имя</label>
+                    <div>
+                        @Html.TextBoxFor(model => model.Name, new {@class = "form-control"})
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Фамилия</label>
+                    <div>
+                        @Html.TextBoxFor(model => model.Surname, new {@class = "form-control"})
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Курсы</label>
+                    <div>
+                        @foreach (var c in ViewBag.Courses)
+                        {
+                            <input type="checkbox" name="selectedCourses" value="@c.Id"
+                                   @(Model.Courses.Contains(c) ? "checked=\"checked\"" : "")/>
+                            @c.Name
+                            <br/>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-success" type="submit">Сохранить</button>
+            </div>
+        </div>
+    </fieldset>
+}

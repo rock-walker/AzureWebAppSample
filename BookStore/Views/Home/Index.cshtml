@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model  IEnumerable<BookStore.Models.Book>
+@section Footer {
+    Все права защищены. Syte Corp. 2015.
+}
+<h3>Распродажа книг</h3>
+<table class="table table-responsive table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Название книги</th>
+            <th>Автор</th>
+            <th>Цена</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (BookStore.Models.Book b in Model)
+        {
+            <tr>
+                <td>@b.Name</td>
+                <td>@b.Author</td>
+                <td>@b.Price</td>
+                <td><a href="@Url.Action("Buy",new {id=b.Id})">Купить</a></td>
+            </tr>
+        }
+    </tbody>            
+</table>
