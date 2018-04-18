@@ -18,6 +18,8 @@ namespace BookStore.Controllers
 
         public HomeController()
         {
+            appender.ConnectionString = "DefaultEndpointsProtocol=https;AccountName=cdpstorage;AccountKey=44dFNeGBZYRpM0+Ovk2iI82BvS9/KdkkmskTBLnq8Tw0EsAqdXbTitADc7T/8ML+OuJAWfrqarcK9wXf8ER4HA==;EndpointSuffix=core.windows.net";
+            appender.TableName = "AzureTableAppender";
             appender.ActivateOptions();
         }
 
