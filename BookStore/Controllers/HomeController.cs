@@ -5,15 +5,38 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BookStore.Models;
+using log4net.Appender;
+using log4net.Core;
 
 namespace BookStore.Controllers
 {
     public class HomeController : Controller
     {
+        //private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly AzureTableAppender appender = new AzureTableAppender();
         BookContext db = new BookContext();
+
+        public HomeController()
+        {
+            appender.ActivateOptions();
+        }
 
 	    public ActionResult Index()
         {
+            appender.DoAppend(new LoggingEvent(
+                    new LoggingEventData
+                    {
+                        Domain = "testDomain",
+                        Identity = "testIdentity",
+                        Level = Level.Critical,
+                        LoggerName = "testLoggerName",
+                        Message = "testMessage",
+                        ThreadName = "testThreadName",
+                        TimeStamp = DateTime.UtcNow,
+                        UserName = "testUsername",
+                        LocationInfo = new LocationInfo("className", "methodName", "fileName", "lineNumber")
+                    }
+                ));
             // получаем из бд все объекты Book
             IEnumerable<Book> books = db.Books;
             return View(books);
