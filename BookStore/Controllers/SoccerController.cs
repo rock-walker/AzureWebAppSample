@@ -10,6 +10,7 @@ namespace BookStore.Controllers
 {
     public class SoccerController : Controller
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         SoccerContex db = new SoccerContex();
 
 		protected override void Dispose(bool disposing)
@@ -91,6 +92,11 @@ namespace BookStore.Controllers
         [HttpPost]
         public ActionResult Create(Player player)
         {
+            if (string.IsNullOrEmpty(player.Name))
+            {
+                log.Error("Player name shouldn't be empty");
+                throw new ArgumentException("Player name shouldn't be empty");
+            }
             //Добавляем игрока в таблицу
             db.Players.Add(player);
             db.SaveChanges();
