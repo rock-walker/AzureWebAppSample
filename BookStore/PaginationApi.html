@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/Content/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <table class="table table-hover table-bordered table-responsive">
+        <thead>
+            <tr>
+                <th>Модель</th>
+                <th>Производитель</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Phones)
+            {
+            <tr>
+                <td>@item.Model</td>
+                <td>@item.Producer</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+<div class="btn-group">
+    <a class="btn btn-default btn-primary selected" href="/PaginationApi?page=1">1</a>
+    <a class="btn btn-default" href="/PaginationApi?page=2">2</a>
+    <a class="btn btn-default" href="/PaginationApi?page=3">3</a>
+    <a class="btn btn-default" href="/PaginationApi?page=4">4</a>
+</div>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+<script>
+    var uri = 'paginationapi?page=1';
+
+    $(document).ready(function () {
+        $.getJSON(uri)
+            .done(function (data) {
+                $.each(data, function (key, item) {
+                    $('<td>', { text: formatItem(item) }).appendTo($('#products'));
+                });
+            });
+    });
+
+    function formatItem(item) {
+        return item.Name + ': $' + item.Price;
+    }
+
+    function find() {
+        var id = $('#prodId').val();
+        $.getJSON(uri + '/' + id)
+            .done(function (data) {
+                $('#product').text(formatItem(data));
+            })
+            .fail(function (jqXHR, textStatus, err) {
+                $('#product').text('Error: ' + err);
+            });
+    }
+</script>
+</body>
+</html>

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using  BookStore.Models;
 using System.Data.Entity;
+using Microsoft.ApplicationInsights;
 
 namespace BookStore.Controllers
 {
@@ -12,6 +13,7 @@ namespace BookStore.Controllers
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         SoccerContex db = new SoccerContex();
+        private TelemetryClient tc = new TelemetryClient();
 
 		protected override void Dispose(bool disposing)
 		{
@@ -126,6 +128,7 @@ namespace BookStore.Controllers
         [HttpPost]
         public ActionResult Edit(Player player)
         {
+            tc.TrackEvent("Edit Soccer Player", new Dictionary<string, string>{ {"new Player name", player.Name} });
             db.Entry(player).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Index");

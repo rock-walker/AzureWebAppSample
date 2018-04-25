@@ -32,7 +32,7 @@ namespace BookStore.Controllers
             int pageSize = 3; // количество объектов на страницу
             IEnumerable<Phone> phonesPerPages = phones.Skip((page - 1) * pageSize).Take(pageSize);
             PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = phones.Count };
-            IndexViewModel ivm = new IndexViewModel { PageInfo = pageInfo, Phones = phonesPerPages };
+            PaginationViewModel ivm = new PaginationViewModel { PageInfo = pageInfo, Phones = phonesPerPages };
             return View(ivm);
         }
     }

@@ -39,3 +39,10 @@
 <div>
     @Html.ActionLink("К списку игроков", "Index",null,new {@class="btn btn-default"})
 </div>
+<script>
+    var ageElement = document.getElementById("Age");
+    ageElement.onchange = function (e, i) {
+        var ageVal = this.value;
+        appInsights.trackEvent("JS Create Player custom event", { Age: ageVal});
+    };
+</script>
