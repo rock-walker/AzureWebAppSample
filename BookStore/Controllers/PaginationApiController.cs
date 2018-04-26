@@ -5,6 +5,10 @@ using BookStore.Models.Pagination;
 
 namespace BookStore.Controllers
 {
+    /// <summary>
+    /// Pagination API for navigation among phones list
+    /// </summary>
+    /// <seealso cref="System.Web.Http.ApiController" />
     public class PaginationApiController : ApiController
     {
         private List<Phone> phones = new List<Phone>
@@ -21,7 +25,11 @@ namespace BookStore.Controllers
             new Phone {Id = 10, Model = "Samsung Galaxy II", Producer = "Samsung"}
         };
 
-        // GET api/<controller>/5
+        /// <summary>
+        /// Returns specified page with phones.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <returns></returns>
         public PaginationViewModel Get(int page)
         {
             int pageSize = 3;
@@ -40,17 +48,14 @@ namespace BookStore.Controllers
             };
         }
 
-        // POST api/<controller>
         public void Post([FromBody]string value)
         {
         }
 
-        // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE api/<controller>/5
         public void Delete(int id)
         {
         }
