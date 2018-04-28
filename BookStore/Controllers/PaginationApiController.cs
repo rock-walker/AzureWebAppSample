@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 using BookStore.Models.Pagination;
+using Swashbuckle.Swagger.Annotations;
 
 namespace BookStore.Controllers
 {
@@ -26,10 +27,12 @@ namespace BookStore.Controllers
         };
 
         /// <summary>
-        /// Returns specified page with phones.
+        /// Test request
         /// </summary>
         /// <param name="page">The page.</param>
         /// <returns></returns>
+        [SwaggerResponse(500, "Bad data")]
+        [SwaggerResponse(System.Net.HttpStatusCode.OK, "Returns the fake data", typeof(PaginationViewModel))]
         public PaginationViewModel Get(int page)
         {
             int pageSize = 3;
