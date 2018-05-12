@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Microsoft.Azure.Search;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookStore.Models
 {
     public class Book
     {
-        // ID книги
         public int Id { get; set; }
-        // название книги
+        [Key]
+        [IsSearchable]
         public string Name { get; set; }
-        // автор книги
+        [IsSearchable]
         public string Author { get; set; }
-        // цена
-        public int Price { get; set; }
+        [IsFacetable, IsFilterable]
+        public int? Price { get; set; }
     }
 }

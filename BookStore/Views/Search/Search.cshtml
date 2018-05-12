@@ -1,0 +1,26 @@
+﻿@using Microsoft.Azure.Search.Models;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model IList<SearchResult>
+
+<table class="table table-responsive table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Документ</th>
+            <th>Highlights</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (SearchResult s in Model)
+        {
+            <tr>
+                <td>@s.Document</td>
+                <td>@s.Highlights</td>
+                <td>@s.Score</td>
+            </tr>
+        }
+    </tbody>
+</table>
