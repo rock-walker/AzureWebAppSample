@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using  BookStore.Models;
 using System.Data.Entity;
 using Microsoft.ApplicationInsights;
+using BookStore.App_Start;
+using Microsoft.Azure.Search;
+using Microsoft.Azure.Search.Models;
 
 namespace BookStore.Controllers
 {
@@ -14,6 +17,7 @@ namespace BookStore.Controllers
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         SoccerContex db = new SoccerContex();
         private TelemetryClient tc = new TelemetryClient();
+        private ISearchIndexClient _soccerIndex = AzureSearch.SoccerIndexClient;
 
 		protected override void Dispose(bool disposing)
 		{
@@ -99,16 +103,37 @@ namespace BookStore.Controllers
                 log.Error("Player name shouldn't be empty");
                 throw new ArgumentException("Player name shouldn't be empty");
             }
-            //Добавляем игрока в таблицу
+            player.Id = Guid.NewGuid();
             db.Players.Add(player);
             db.SaveChanges();
-            // перенаправляем на главную страницу
+
+            var actions = new IndexAction<Player>[]
+            {
+                IndexAction.Upload(player)
+            };
+            var batch = IndexBatch.New(actions);
+
+            try
+            {
+                 _soccerIndex.Documents.Index(batch);
+            }
+            catch (IndexBatchException e)
+            {
+                // Sometimes when your Search service is under load, indexing will fail for some of the documents in
+                // the batch. Depending on your application, you can take compensating actions like delaying and
+                // retrying. For this simple demo, we just log the failed document keys and continue.
+                Console.WriteLine(
+                    "Failed to index some of the documents: {0}",
+                    String.Join(", ", e.IndexingResults.Where(r => !r.Succeeded).Select(r => r.Key)));
+            }
+
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(string guid)
         {
+            var id = Guid.Parse(guid);
             if (id == null)
             {
                 return HttpNotFound();

@@ -10,5 +10,11 @@ namespace BookStore.Models
     {
         public DbSet<Player> Players { get; set; }
         public DbSet<Team> Teams { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            Database.SetInitializer<SoccerContex>(null);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

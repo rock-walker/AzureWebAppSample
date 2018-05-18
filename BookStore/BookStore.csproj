@@ -270,6 +270,11 @@
     </Compile>
     <Compile Include="Helpers\ListHelper.cs" />
     <Compile Include="Helpers\PagingHelpers.cs" />
+    <Compile Include="Migrations\201805170909307_BookContext.cs" />
+    <Compile Include="Migrations\201805170909307_BookContext.Designer.cs">
+      <DependentUpon>201805170909307_BookContext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\BookContext.cs" />
     <Compile Include="Models\BookDbInitializer.cs" />
@@ -371,6 +376,11 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201805170909307_BookContext.resx">
+      <DependentUpon>201805170909307_BookContext.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

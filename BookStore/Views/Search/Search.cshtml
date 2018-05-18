@@ -1,26 +1,55 @@
 ﻿@using Microsoft.Azure.Search.Models;
+@using System.Text;
+@using BookStore.Models;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model IList<SearchResult>
+@model Tuple<IList<SearchResult<Book>>, IList<SearchResult<Player>>, IList<SearchResult<Student>>>
 
-<table class="table table-responsive table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>Документ</th>
-            <th>Highlights</th>
-            <th>Score</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (SearchResult s in Model)
-        {
-            <tr>
-                <td>@s.Document</td>
-                <td>@s.Highlights</td>
-                <td>@s.Score</td>
-            </tr>
-        }
-    </tbody>
-</table>
+@if (Model.Item1 != null && Model.Item1.Count > 0)
+{
+    <h3>Books results</h3>
+
+    var booksCounter = 0;
+    while (booksCounter < Model.Item1.Count && booksCounter < 5)
+    {
+        var item = Model.Item1[booksCounter];
+        <div style="border-bottom:solid 2px red">
+            @Encoding.UTF8.GetString(HttpServerUtility.UrlTokenDecode(item.Document.Name)) --- @item.Document.Author --- @item.Document.Price
+        </div>
+
+        booksCounter++;
+    }
+}
+
+@if (Model.Item2 != null && Model.Item2.Count > 0)
+{
+    <h3>Soccer results</h3>
+
+    var counter = 0;
+    while (counter < Model.Item2.Count && counter < 5)
+    {
+        var item = Model.Item2[counter];
+        <div style="border-bottom:solid 2px red">
+            @item.Document.Name --- @item.Document.Position --- @item.Document.Age
+        </div>
+
+        counter++;
+    }
+}
+
+@if (Model.Item3 != null && Model.Item3.Count > 0)
+{
+    <h3>Student results</h3>
+    var counter = 0;
+    while (counter < Model.Item3.Count && counter < 5)
+    {
+        var item = Model.Item3[counter];
+        <div style="border-bottom:solid 2px red">
+            @item.Document.Name --- @item.Document.Surname
+        </div>
+
+        counter++;
+    }
+}

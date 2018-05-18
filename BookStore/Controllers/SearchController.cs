@@ -1,9 +1,8 @@
 ﻿using BookStore.App_Start;
+using BookStore.Models;
 using Microsoft.Azure.Search.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace BookStore.Controllers
@@ -25,9 +24,15 @@ namespace BookStore.Controllers
                 query = "*";
             }
 
-            DocumentSearchResult results = azureSearch.Search(query);
+            var books = azureSearch.Search(query);
 
-            return View(results.Results);
+            var soccers = azureSearch.SearchSoccers(query);
+
+            var students = azureSearch.SearchStudents(query);
+
+            var output = Tuple.Create(books, soccers, students);
+
+            return View(output);
         }
     }
 }
