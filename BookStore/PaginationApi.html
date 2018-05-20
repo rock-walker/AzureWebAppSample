@@ -63,6 +63,14 @@
         <a class="btn btn-default" href="/PaginationApi.html?page=3">3</a>
         <a class="btn btn-default" href="/PaginationApi.html?page=4">4</a>
     </div>
+
+    <h3>Add phone: </h3>
+    <p>Model: <br/><input type="text" maxlength="100" id="phoneModel" /></p>
+    <p>Producer: <br/><input type="text" maxlength="100" id="phoneProducer" /></p>
+    <p></br>
+    <input type="button" maxlength="50" value="Add" id="addPhone" style="background-color: green;" onclick="postPhone()"/>
+    </p>
+
 </div>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
 <script>
@@ -81,7 +89,18 @@
 
     function formatItem(item) {
         return item.Model + ': ' + item.Producer;
-    }
+    };
+
+    function postPhone() {
+        var phoneModel = $('#phoneModel').val();
+        var phoneProducer = $('#phoneProducer').val();
+        var uri = '/api/paginationapi';
+        $.post(uri, { "Model": phoneModel, "Producer": phoneProducer })
+            .success(function (data) {
+                location.reload();
+            })
+
+    };
 </script>
 </body>
 </html>

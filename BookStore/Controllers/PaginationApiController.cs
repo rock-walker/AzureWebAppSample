@@ -3,6 +3,10 @@ using System.Linq;
 using System.Web.Http;
 using BookStore.Models.Pagination;
 using Swashbuckle.Swagger.Annotations;
+using System.Configuration;
+using Microsoft.Azure.Documents.Client;
+using System;
+using System.Threading.Tasks;
 
 namespace BookStore.Controllers
 {
@@ -12,8 +16,19 @@ namespace BookStore.Controllers
     /// <seealso cref="System.Web.Http.ApiController" />
     public class PaginationApiController : ApiController
     {
+        private DocumentClient cosmosClient;
+        private Uri dbUri;
+        private List<Phone> phones;
+
+        public PaginationApiController()
+        {
+            cosmosClient = new DocumentClient(new Uri(ConfigurationManager.AppSettings["CosmosEndpoint"]), ConfigurationManager.AppSettings["CosmosKey"]);
+            dbUri = UriFactory.CreateDocumentCollectionUri("AzurePhoneStorage", "Phones");
+        }
+        /*
         private List<Phone> phones = new List<Phone>
         {
+
             new Phone {Id = 1, Model = "Samsung Galaxy III", Producer = "Samsung"},
             new Phone {Id = 2, Model = "Samsung Ace II", Producer = "Samsung"},
             new Phone {Id = 3, Model = "HTC Hero", Producer = "HTC"},
@@ -25,7 +40,7 @@ namespace BookStore.Controllers
             new Phone {Id = 9, Model = "Sony Xperia X10", Producer = "SONY"},
             new Phone {Id = 10, Model = "Samsung Galaxy II", Producer = "Samsung"}
         };
-
+        */
         /// <summary>
         /// Test request
         /// </summary>
@@ -35,13 +50,32 @@ namespace BookStore.Controllers
         [SwaggerResponse(System.Net.HttpStatusCode.OK, "Returns the fake data", typeof(PaginationViewModel))]
         public PaginationViewModel Get(int page)
         {
+            IQueryable<Phone> rawPhones = null;
+            phones = new List<Phone>();
+            try
+            {
+                rawPhones = cosmosClient.CreateDocumentQuery<Phone>(dbUri);
+
+                foreach(var phone in rawPhones)
+                {
+                    phones.Add(phone);
+                }
+
+                //var phonesCollection = cosmosClient.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri("AzurePhoneStorage", "Phones")).Result;
+                //phonesCollection.
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+                return null;
+            }
             int pageSize = 3;
             var phonesPerPages = phones.Skip((page - 1) * pageSize).Take(pageSize);
             var pageInfo = new PageInfo
             {
                 PageNumber = page,
                 PageSize = pageSize,
-                TotalItems = phones.Count
+                TotalItems = phones.Count()
             };
 
             return new PaginationViewModel
@@ -51,8 +85,22 @@ namespace BookStore.Controllers
             };
         }
 
-        public void Post([FromBody]string value)
+        public async Task Post([FromBody]Phone value)
         {
+            if (!ModelState.IsValid)
+            {
+                return ;
+            }
+            var maxPhoneId = cosmosClient.CreateDocumentQuery<Phone>(dbUri).Max<Phone>(x => x.Id);
+            value.Id = ++maxPhoneId;
+            try
+            {
+                await cosmosClient.CreateDocumentAsync(dbUri, value);
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+            }
         }
 
         public void Put(int id, [FromBody]string value)
