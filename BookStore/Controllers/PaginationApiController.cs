@@ -60,9 +60,6 @@ namespace BookStore.Controllers
                 {
                     phones.Add(phone);
                 }
-
-                //var phonesCollection = cosmosClient.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri("AzurePhoneStorage", "Phones")).Result;
-                //phonesCollection.
             }
             catch (Exception ex)
             {
