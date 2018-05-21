@@ -7,7 +7,7 @@ namespace BookStore.Models.Pagination
     {
         [JsonProperty(PropertyName="id")]
         [JsonConverter(typeof(IntToStringConverter))]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
         public string Model { get; set; }

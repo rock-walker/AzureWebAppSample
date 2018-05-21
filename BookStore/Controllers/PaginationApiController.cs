@@ -96,11 +96,17 @@ namespace BookStore.Controllers
             {
                 return ;
             }
-            var maxPhoneId = cosmosClient.CreateDocumentQuery<Phone>(dbUri).Max<Phone>(x => x.Id);
-            value.Id = ++maxPhoneId;
+
+            var requestOption = new RequestOptions
+            {
+                PreTriggerInclude = new List<string> {"maxId"}
+            };
+
+            //cosmosClient.CreateDocumentQuery<Phone>(dbUri, requestOption);//.Max<Phone>(x => x.Id);
+            //value.Id = ++maxPhoneId;
             try
             {
-                await cosmosClient.CreateDocumentAsync(dbUri, value);
+                await cosmosClient.CreateDocumentAsync(dbUri, value, requestOption);
             }
             catch (Exception ex)
             {

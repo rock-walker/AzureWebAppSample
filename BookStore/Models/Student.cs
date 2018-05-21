@@ -50,7 +50,7 @@ namespace BookStore.Models
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return int.Parse(reader.Value.ToString());
+            return long.Parse(reader.Value.ToString());
         }
 
         public override bool CanConvert(Type objectType)
