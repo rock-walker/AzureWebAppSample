@@ -7,6 +7,7 @@ using System.Configuration;
 using Microsoft.Azure.Documents.Client;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Azure.Documents.Linq;
 
 namespace BookStore.Controllers
 {
@@ -48,17 +49,24 @@ namespace BookStore.Controllers
         /// <returns></returns>
         [SwaggerResponse(500, "Bad data")]
         [SwaggerResponse(System.Net.HttpStatusCode.OK, "Returns the fake data", typeof(PaginationViewModel))]
-        public PaginationViewModel Get(int page)
+        public async Task<PaginationViewModel> Get(int page)
         {
-            IQueryable<Phone> rawPhones = null;
-            phones = new List<Phone>();
+            int pageSize = 3;
+            IEnumerable<Phone> phonesPerPages = new List<Phone>();
+
             try
             {
-                rawPhones = cosmosClient.CreateDocumentQuery<Phone>(dbUri);
-
-                foreach(var phone in rawPhones)
+                var feedOptions = new FeedOptions
                 {
-                    phones.Add(phone);
+                    MaxItemCount = 3
+                };
+
+                var query = cosmosClient.CreateDocumentQuery<Phone>(dbUri, feedOptions).AsDocumentQuery();
+                var currentPage = 0;
+
+                while (query.HasMoreResults && currentPage++ < page)
+                {
+                    phonesPerPages = await query.ExecuteNextAsync<Phone>();
                 }
             }
             catch (Exception ex)
@@ -66,19 +74,19 @@ namespace BookStore.Controllers
                 var message = ex.Message;
                 return null;
             }
-            int pageSize = 3;
-            var phonesPerPages = phones.Skip((page - 1) * pageSize).Take(pageSize);
+
+            //var phonesPerPages = phones.Skip((page - 1) * pageSize).Take(pageSize);
             var pageInfo = new PageInfo
             {
                 PageNumber = page,
                 PageSize = pageSize,
-                TotalItems = phones.Count()
+                TotalItems = 10
             };
 
             return new PaginationViewModel
             {
                 PageInfo = pageInfo,
-                Phones = phonesPerPages
+                Phones = phonesPerPages.ToList()
             };
         }
 

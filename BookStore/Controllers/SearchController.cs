@@ -40,10 +40,10 @@ namespace BookStore.Controllers
 
         private IList<SearchResult<Book>> GetCachedBooks(string query)
         {
-            IList<SearchResult<Book>> books = null;
+            IList<SearchResult<Book>> books;
 
             IDatabase cache = redisConnection.GetDatabase();
-            var serializedBooks = cache.StringGet(query+":books");
+            RedisValue serializedBooks = cache.StringGet("books|" + query);
             if (!serializedBooks.IsNullOrEmpty)
             {
                 books = JsonConvert.DeserializeObject<IList<SearchResult<Book>>>(serializedBooks);
@@ -51,7 +51,7 @@ namespace BookStore.Controllers
             else
             {
                 books = azureSearch.Search(query);
-                cache.StringSet(query+":books", JsonConvert.SerializeObject(books), TimeSpan.FromSeconds(30));
+                cache.StringSetAsync("books|" + query, JsonConvert.SerializeObject(books), TimeSpan.FromSeconds(30));
             }
 
             return books;
